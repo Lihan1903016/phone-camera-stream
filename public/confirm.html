@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html>
+<head><title>Confirming...</title></head>
+<body>
+  <script>
+    const token = new URLSearchParams(window.location.search).get("token");
+    window.location.href = `/verify-token?token=${token}`;
+  </script>
+</body>
+</html>

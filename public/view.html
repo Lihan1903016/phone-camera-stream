@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head><title>View Camera</title></head>
+<body>
+  <h2>Live Feed from Phone</h2>
+  <img id="viewer" width="600">
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const img = document.getElementById("viewer");
+
+    socket.on("video", (data) => {
+      img.src = data;
+    });
+  </script>
+</body>
+</html>

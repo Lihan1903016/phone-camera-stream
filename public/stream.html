@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Phone Camera Stream</title>
+</head>
+<body>
+  <h2>Streaming Camera + Mic</h2>
+  <video id="localVideo" autoplay muted playsinline></video>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const video = document.getElementById('localVideo');
+
+    const peer = new RTCPeerConnection({
+      iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+    });
+
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+      .then(stream => {
+        video.srcObject = stream;
+        stream.getTracks().forEach(track => peer.addTrack(track, stream));
+
+        return peer.createOffer();
+      })
+      .then(offer => {
+        return peer.setLocalDescription(offer).then(() => {
+          socket.emit('offer', offer);
+        });
+      });
+
+    socket.on('answer', answer => {
+      peer.setRemoteDescription(new RTCSessionDescription(answer));
+    });
+
+    socket.on('candidate', candidate => {
+      peer.addIceCandidate(new RTCIceCandidate(candidate));
+    });
+
+    peer.onicecandidate = event => {
+      if (event.candidate) {
+        socket.emit('candidate', event.candidate);
+      }
+    };
+  </script>
+</body>
+</html>
