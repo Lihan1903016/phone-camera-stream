@@ -15,7 +15,7 @@ app.use(express.json());
 app.post("/send-email", async (req, res) => {
   const { email } = req.body;
   const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: "10m" });
-  const confirmURL = `https://b0xjtsxm-3000.asse.devtunnels.ms/confirm.html?token=${token}`;
+  const confirmURL = `https://phone-camera-stream.onrender.com/confirm.html?token=${token}`;
 
   const transporter = nodemailer.createTransport({
     service: "gmail",
